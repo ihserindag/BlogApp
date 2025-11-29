@@ -1,0 +1,44 @@
+@model User
+<div class="row" >
+    <div class="col-md-2">
+        <div class="bg-white p-2">
+            <img src="/img/@Model.Image" class="img-fluid" alt="">
+        </div>
+    </div> 
+
+    <div class="col-md-10">
+        <div class="bg-white p-4">
+            <h5>@Model.Name</h5>
+            <hr>
+            <div id="posts">
+                <h5 class="my-4">Yayınlanan Gönderiler</h5>
+                <ul class="list-group">
+                    @foreach(var post in @Model.Posts)
+                    {
+                        <li class="list-group-item">
+                            <i class="bi bi-caret-right-fill"></i>
+                            <a asp-controller="Posts" asp-action="Details" asp-route-url="@post.Url" target="_blank">
+                                 @post.Title
+                            </a>  
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="comments">
+                <h5 class="my-4">Yorumlar</h5>
+                @foreach(var comment in @Model.Comments)
+                    {
+                        <li class="list-group-item ">
+                            <i class="bi bi-chat-right-text-fill me-2"></i>
+                                 @comment.Text
+                                 <i> <u>
+                                 <a asp-controller="Posts" asp-action="Details" asp-route-url="@comment.Post.Url" target="_blank">
+                                  [@comment.Post.Title]
+                                  </a>
+                                  </u> </i>
+                        </li>
+                    }
+            </div>
+        </div>
+    </div> 
+</div>

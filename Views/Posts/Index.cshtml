@@ -1,0 +1,72 @@
+@model PostsViewModel
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="bg-white p-4">
+      <h1 class="h4 mb-4">
+     @ViewBag.Tag 
+      
+      </h1>
+      @foreach (var post in @Model.Posts)
+      {
+        <div class="card bg-transparent border-0 mb-3">
+          <div class="row">
+            <div class="col-4">
+              <img src="~/img/@post.Image" class="img-fluid rounded" alt="">
+            </div>
+            <div class="col-8">
+              <h5>
+                <a asp-action="Details" asp-route-url="@post.Url" class="btn-link fw-bold">@post.Title</a>
+              </h5>
+              <p>
+                @post.Description
+
+
+              </p>
+              @foreach (var tag in @post.Tags)
+              {
+
+                <a asp-action="Index" asp-route-tag="@tag.Url"
+                  class="barge bg-@tag.Color bg-opacity-10 text-@tag.Color mb-2 p-1 fw-bold rounded">@tag.Text</a>
+              }
+            </div>
+          </div>
+        </div>
+        <hr class="my-3" />
+      }
+      <nav aria-label="Sayfalama">
+        <ul class="pagination">
+          <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)"
+              asp-route-tag="@Model.CurrentTag">
+              Önceki
+            </a>
+          </li>
+
+          @for (int i = 1; i <= Model.TotalPages; i++)
+          {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+              <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-tag="@Model.CurrentTag">
+                @i
+              </a>
+            </li>
+          }
+
+          <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)"
+              asp-route-tag="@Model.CurrentTag">
+              Sonraki
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+    </div>
+  </div>
+  <div class="col-lg-4">
+
+    <vc:tags-menu></vc:tags-menu>
+    <vc:new-posts></vc:new-posts>
+
+  </div>
+</div>

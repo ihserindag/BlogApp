@@ -1,0 +1,160 @@
+@using System.Reflection.Metadata
+@model Post
+<div class="row">
+    <div class="col-lg-8">
+        <div class="bg-white p-4">
+            <h1 class="h4 mb-4">
+                @Model.Title
+            </h1>
+            <div class="tags mb-2">
+                @foreach (var tag in @Model.Tags)
+                {
+                    <a asp-action="Index" asp-route-tag="@tag.Url"
+                        class="barge bg-@tag.Color bg-opacity-10 text-@tag.Color mb-2 p-1 fw-bold rounded">@tag.Text</a>
+                }
+            </div>
+
+            <img src="~/img/@Model.Image" class="img-fluid rounded" alt="">
+            <ul class="list-inline my-3 border-bottom">
+                <li class="list-inline-item">
+                    <i class="bi bi-calendar"></i>@(Model.PublishedOn?.ToString("d") ?? "")
+                </li>
+                <li class="list-inline-item">
+                    <i class="bi bi-person-circle me-2"></i>
+                        <a asp-controller="Users" asp-action="Profile" asp-route-username="@Model.User.UserName">
+                            @(Model.User.Name)
+                        </a>
+                     
+                </li>
+            </ul>
+            <div>
+                @Html.Raw(@Model.Content)
+
+            </div>
+        </div>
+        <div class="bg-white mt-3">
+            <div class="card border-0">
+                <div class="card-header pb-0">
+                    <h4> <span id="commentCount">@Model.Comments.Count() </span> adet yorum</h4>
+                </div>
+                <div class="card-body">
+                    <div id="comments">
+                        @foreach (var comment in @Model.Comments)
+                        {
+                            <div class="my-4 d-flex">
+                                <img src="~/img/@comment.User.Image" class="avatar rounded-circle float-start me-3" alt="">
+                                <div>
+                                    <div class="mb-2 d-flex">
+                                        <a asp-controller="Users" asp-action="Profile" asp-route-username="@comment.User.UserName">
+                                         <h6 class="me-2">@comment.User.Name</h6>
+                                        </a>
+
+                                       
+                                        <small>@comment.PublishedOn</small>
+
+                                    </div>
+                                    <p>@comment.Text</p>
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <hr class="my-4">
+                    @if (User.Identity!.IsAuthenticated)
+                    {
+
+                        <div>
+                            <h4 class="mb-3">Yorum Ekle</h4>
+                            <form asp-controller="Posts" asp-action="AddComment" method="post">
+                                <input type="hidden" id="PostId" name="PostId" value="@Model.PostId">
+
+                                <div class="row">
+
+                                    <div class="col-md-12 form-group mb-3">
+                                        <label for="Text" class="form-label">Yorum</label>
+                                        <textarea name="Text" id="Text" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-md-12 form-group mb-3 ">
+                                        <button id="btnYorum" type="submit"
+                                            class="btn btn-outline-primary float-end">Kaydet</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div>
+                            <p class="mb-3">Yorum için uygulamaya giriş yapmalısınız</p>
+                            <a asp-controller="Users" asp-action="Login" class="btn btn-outline-primary">Giriş Yap</a>
+                        </div>
+                    }
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <vc:tags-menu></vc:tags-menu>
+        <vc:new-posts></vc:new-posts>
+    </div>
+
+
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnYorum").click(function () {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("AddComment")',
+                    dataType: 'json',
+                    data: {
+                        PostId: $("#PostId").val(),
+
+                        Text: $("#Text").val()
+                    },
+                    success: function (yorum) {
+                        var date = new Date(yorum.publishedOn);
+
+                        $("#comments").append(
+                            `
+                                    <div class="my-4 d-flex">
+                                        <img src="/img/${yorum.image}" class="avatar rounded-circle float-start me-3" alt="">
+                                        <div>
+                                            <div class="mb-2 d-flex">
+                                                <a href="/profile/${yorum.userName}">
+                                                    <h6 class="me-2">${yorum.name}</h6>
+                                                </a>
+
+                                                <small>${date.toLocaleString()}</small>
+
+                                            </div>
+                                            <p>${yorum.text}</p>
+
+                                        </div>
+                                    </div>
+                                    `
+
+                        );
+                        $("#UserName").val("");
+                        $("#Text").val("");
+                        var adet = $("#commentCount").text();
+                        $("#commentCount").text(parseInt(adet) + 1);
+
+                    }
+
+                });
+                return false;
+            });
+
+        }
+        );
+    </script>
+}

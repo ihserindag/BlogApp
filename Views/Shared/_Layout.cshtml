@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a href="/" class="navbar-brand ">
+                <i class="bi bi-code"></i> BlogApp
+            </a>
+            <ul class="navbar-nav ms-auto">
+
+                @if (User.Identity!.IsAuthenticated)
+                {
+
+                    <li class="nav-item">
+                        <a asp-controller="Posts" asp-action="List" class="nav-link"> Post List</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link"> @User.Identity.Name</a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Users" asp-action="Logout">Logout</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a asp-controller="Users" asp-action="Login" class="nav-link">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Users" asp-action="Register" class="nav-link">Register</a>
+                    </li>
+                }
+
+
+            </ul>
+        </div>
+    </nav>
+    <div class="container my-3">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(function () {
+            @if (TempData["ToastMessage"] != null)
+                {
+                    var type = TempData["ToastType"] ?? "info";
+
+                    <text>
+                        toastr.options.positionClass = "toast-top-right";
+                        toastr.options.timeOut = 3000;
+
+                        toastr["@type"]("@TempData["ToastMessage"]");
+                    </text>
+            }
+    });
+    </script>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>
