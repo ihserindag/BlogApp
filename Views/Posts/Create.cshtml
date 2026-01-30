@@ -2,53 +2,128 @@
 
 <div class="row">
     <div class="col-12">
-        <div class="bg-white p-4">
-            <h1>Post Create</h1>
-            <form asp-controller="Posts" asp-action="Create"  method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="mb-3">
-                        <label asp-for="Title" class="form-label"></label>
-                        <input asp-for="Title" class="form-control">
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label"></label>
-                        <input asp-for="Description" class="form-control">
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Url" class="form-label"></label>
-                        <input asp-for="Url" class="form-control">
-                        <span asp-validation-for="Url" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Content" class="form-label"></label>
-                        <textarea asp-for="Content" class="form-control"></textarea>
-                        <span asp-validation-for="Content" class="text-danger"></span>
+        <!-- Page Header -->
+        <div class="mb-4">
+            <h1 class="text-gradient mb-1">
+                <i class="bi bi-plus-circle me-2"></i>Yeni Post Oluştur
+            </h1>
+            <p class="text-secondary mb-0">Yeni bir blog gönderisi oluşturun ve yayınlayın</p>
+        </div>
+        
+        <!-- Create Form -->
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form asp-controller="Posts" asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <label asp-for="Title" class="form-label">
+                                    <i class="bi bi-type me-1"></i>Başlık
+                                </label>
+                                <input asp-for="Title" class="form-control form-control-lg" placeholder="Gönderi başlığını girin...">
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label asp-for="Description" class="form-label">
+                                    <i class="bi bi-card-text me-1"></i>Açıklama
+                                </label>
+                                <input asp-for="Description" class="form-control" placeholder="Kısa bir açıklama girin...">
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                                <small class="text-muted">Bu açıklama gönderi listesinde gösterilecek.</small>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label asp-for="Url" class="form-label">
+                                    <i class="bi bi-link-45deg me-1"></i>URL
+                                </label>
+                                <input asp-for="Url" class="form-control" placeholder="seo-uyumlu-url">
+                                <span asp-validation-for="Url" class="text-danger"></span>
+                                <small class="text-muted">URL otomatik olarak oluşturulabilir veya manuel olarak düzenlenebilir.</small>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label asp-for="Content" class="form-label">
+                                    <i class="bi bi-file-text me-1"></i>İçerik
+                                </label>
+                                <textarea asp-for="Content" class="form-control" rows="15" placeholder="Gönderi içeriğini buraya yazın..."></textarea>
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card bg-light border-0">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">
+                                        <i class="bi bi-info-circle me-2"></i>İpuçları
+                                    </h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            İlgi çekici bir başlık seçin
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Kısa ve açıklayıcı açıklama
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            SEO uyumlu URL kullanın
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Kaliteli içerik ekleyin
+                                        </li>
+                                    </ul>
+                                    
+                                    <hr class="my-3">
+                                    
+                                    <h6 class="mb-2">Gönderi Durumu</h6>
+                                    <div class="alert alert-info mb-0">
+                                        <i class="bi bi-clock me-1"></i>
+                                        Gönderi varsayılan olarak pasif durumda oluşturulur. Yayınlamak için düzenleme ekranından aktif edebilirsiniz.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">Kaydet</button>
-                
-            </form>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save me-1"></i> Kaydet
+                        </button>
+                        <a asp-controller="Posts" asp-action="List" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-x-lg me-1"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts
 {
-<script src="https://cdn.tiny.cloud/1/4lochkrgztjb1seczxer5k71o8ks6qwq3mr2n2pvgcjivyqv/tinymce/8/tinymce.min.js" ></script>
-
-<script>
-    tinymce.init({
-  selector: 'textarea#Content',
-   plugins: [
-      "advlist", "anchor", "autolink", "charmap", "code", "fullscreen",
-      "help", "image", "insertdatetime", "link", "lists", "media",
-      "preview", "searchreplace", "table", "visualblocks",
-  ],
-  toolbar: "undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-
-});
-</script>
-
+    <script src="https://cdn.tiny.cloud/1/4lochkrgztjb1seczxer5k71o8ks6qwq3mr2n2pvgcjivyqv/tinymce/8/tinymce.min.js"></script>
+    
+    <script>
+        tinymce.init({
+            selector: 'textarea#Content',
+            height: 500,
+            menubar: false,
+            plugins: [
+                "advlist", "anchor", "autolink", "charmap", "code", "fullscreen",
+                "help", "image", "insertdatetime", "link", "lists", "media",
+                "preview", "searchreplace", "table", "visualblocks", "wordcount"
+            ],
+            toolbar: "undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code preview fullscreen",
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.6; }',
+            branding: false,
+            promotion: false,
+            statusbar: true,
+            elementpath: false
+        });
+    </script>
 }

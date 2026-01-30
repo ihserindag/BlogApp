@@ -34,7 +34,7 @@ var app = builder.Build();
 
 app.UseRouting();
 app.UseStaticFiles();
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseAuthorization();
 
 

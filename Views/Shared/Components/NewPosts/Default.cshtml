@@ -1,20 +1,46 @@
 @model List<Post>
 
-<div class="card mb-3">
-    <div class="card-header">
-        <h5 class="card-title mb-0">New Post</h5>
+<div class="card shadow-sm border-0 mb-4 fade-in">
+    <div class="card-header bg-transparent border-0 pb-0">
+        <h5 class="fw-bold mb-0">
+            <i class="bi bi-lightning-charge-fill text-primary me-2"></i>Yeni Gönderiler
+        </h5>
     </div>
     <div class="card-body">
-        @foreach(var post in Model)
+        @if (Model.Any())
         {
-            <div class="mb-3">
-                <h6 class="mb-0">
-                <a asp-action="Details" asp-route-url="@post.Url">
-                   @post.Title     
-                </a>
-                </h6>
+            <div class="list-group list-group-flush">
+                @foreach (var post in Model)
+                {
+                    <div class="list-group-item px-0 py-3 border-0">
+                        <div class="d-flex gap-3 align-items-start">
+                            <a asp-action="Details" asp-route-url="@post.Url" class="flex-shrink-0">
+                                <img src="~/img/@post.Image" class="rounded-2" alt="@post.Title"
+                                     style="width: 70px; height: 70px; object-fit: cover;">
+                            </a>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-semibold">
+                                    <a asp-action="Details" asp-route-url="@post.Url" 
+                                       class="text-decoration-none text-dark post-link">
+                                        @post.Title
+                                    </a>
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    @(post.PublishedOn?.ToString("d MMM yyyy") ?? "")
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         }
-        
+        else
+        {
+            <div class="text-center py-4 text-muted">
+                <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+                <p class="mb-0 small">Henüz gönderi yok.</p>
+            </div>
+        }
     </div>
 </div>

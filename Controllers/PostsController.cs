@@ -31,7 +31,11 @@ namespace BlogApp.Controllers
         public async Task<IActionResult> Index(string? tag=null, int page=1, int pageSize=5)
         {
             var clais = User.Claims;
-            IQueryable<Post> posts = _postRepository.Posts.Where(x => x.IsActive == true).Include(t => t.Tags);
+            IQueryable<Post> posts = _postRepository.Posts
+                .Where(x => x.IsActive == true)
+                .Include(t => t.Tags)
+                .Include(x => x.User)
+                .Include(x => x.Comments);
             ViewBag.Tag = "Popiler Postlar";
 
             if (!string.IsNullOrEmpty(tag))
@@ -83,12 +87,17 @@ namespace BlogApp.Controllers
             var image = User.FindFirstValue(ClaimTypes.UserData);
             var name = User.FindFirstValue(ClaimTypes.GivenName);
 
+            if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out var userIdInt))
+            {
+                return Json(new { error = "Kullanıcı girişi gerekli" });
+            }
+
             var entity = new Comment
             {
                 Text = Text,
                 PublishedOn = DateTime.Now,
                 PostId = PostId,
-                UserId = int.Parse(userId ?? "")
+                UserId = userIdInt
 
             };
             _commentRepository.CreateComment(entity);
@@ -116,7 +125,14 @@ namespace BlogApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+                {
+                    TempData["ToastType"] = "error";
+                    TempData["ToastMessage"] = "Kullanıcı bilgisi alınamadı.";
+                    return RedirectToAction("Login", "Users");
+                }
+                
                 _postRepository.CreatePost(
                     new Post
                     {
@@ -124,7 +140,7 @@ namespace BlogApp.Controllers
                         Description = model.Description,
                         Content = model.Content,
                         Url = model.Url,
-                        UserId = int.Parse(userId ?? ""),
+                        UserId = userId,
                         PublishedOn = DateTime.Now,
                         Image = "1.jpg",
                         IsActive = false,
@@ -140,9 +156,15 @@ namespace BlogApp.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> List()
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "");
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+            {
+                return RedirectToAction("Login", "Users");
+            }
+            
             var role = User.FindFirstValue(ClaimTypes.Role);
 
             var posts = _postRepository.Posts;

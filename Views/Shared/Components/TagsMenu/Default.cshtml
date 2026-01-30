@@ -1,16 +1,27 @@
 @model List<Tag>
-<div class="card mb-3">
-    <div class="card-header">
-        <h5 class="cart-title mb-0">Tags</h5>
+
+<div class="card shadow-sm border-0 mb-4 fade-in">
+    <div class="card-header bg-transparent border-0 pb-0">
+        <h5 class="fw-bold mb-0">
+            <i class="bi bi-tags-fill text-primary me-2"></i>Etiketler
+        </h5>
     </div>
     <div class="card-body">
-        <ul class="list-inline d-flex flex-wrap gap-2">
-            @foreach (var tag in @Model)
+        <div class="d-flex flex-wrap gap-2">
+            @if (Model.Any())
             {
-                <li class="list-inline-item">
-                    <a asp-controller="Posts" asp-action="Index" asp-route-tag="@tag.Url" class="btn btn-outline-secondary btn-sm">@tag.Text</a>
-                </li>
+                @foreach (var tag in Model)
+                {
+                    <a asp-controller="Posts" asp-action="Index" asp-route-tag="@tag.Url" 
+                       class="barge bg-@tag.Color bg-opacity-10 text-@tag.Color text-decoration-none">
+                        <i class="bi bi-tag-fill me-1"></i>@tag.Text
+                    </a>
+                }
             }
-        </ul>
+            else
+            {
+                <p class="text-muted small mb-0">Henüz etiket yok.</p>
+            }
+        </div>
     </div>
 </div>

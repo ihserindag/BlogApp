@@ -1,39 +1,214 @@
 @model RegisterViewModel
-<div class="row bg-white rounded p-3" >
-    <div class="col-12">
-        <h1>Kayıt Ol</h1>
-        <form action="Register" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="UserName" class="form-label"></label>
-                <input asp-for="UserName" class="form-control">
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control">
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
 
+<div class="row justify-content-center align-items-center min-vh-100-minus-nav py-4">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <!-- Register Card -->
+        <div class="card shadow-lg border-0 fade-in">
+            <div class="card-body p-5">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <div class="mb-3">
+                        <i class="bi bi-person-plus-fill text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-2">Kayıt Ol</h2>
+                    <p class="text-muted">Yeni bir hesap oluşturun</p>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control">
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control">
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+                <!-- Form -->
+                <form asp-action="Register" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert" id="validationSummary"></div>
+                    
+                    <div class="row">
+                        <!-- Username Field -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="UserName" class="form-label fw-semibold">
+                                <i class="bi bi-person me-2"></i>Kullanıcı Adı
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-person text-muted"></i>
+                                </span>
+                                <input asp-for="UserName" class="form-control border-start-0 ps-0" 
+                                       placeholder="kullaniciadi" required>
+                            </div>
+                            <span asp-validation-for="UserName" class="text-danger small"></span>
+                        </div>
 
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control">
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
+                        <!-- Name Field -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                <i class="bi bi-person-badge me-2"></i>Ad Soyad
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-person-badge text-muted"></i>
+                                </span>
+                                <input asp-for="Name" class="form-control border-start-0 ps-0" 
+                                       placeholder="Ad Soyad" required>
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                    </div>
 
-            <button type="submit" class="btn btn-primary">Kaydet</button>
-        </form>
+                    <!-- Email Field -->
+                    <div class="mb-4">
+                        <label asp-for="Email" class="form-label fw-semibold">
+                            <i class="bi bi-envelope me-2"></i>E-posta Adresi
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-envelope text-muted"></i>
+                            </span>
+                            <input asp-for="Email" class="form-control border-start-0 ps-0" 
+                                   type="email" placeholder="ornek@email.com" required>
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <!-- Password Field -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="Password" class="form-label fw-semibold">
+                                <i class="bi bi-lock me-2"></i>Şifre
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-lock text-muted"></i>
+                                </span>
+                                <input asp-for="Password" class="form-control border-start-0 ps-0" 
+                                       type="password" placeholder="••••••••" required id="passwordInput">
+                                <button type="button" class="input-group-text bg-light border-start-0" 
+                                        onclick="togglePassword()">
+                                    <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                            <div class="form-text small text-muted">En az 6 karakter olmalı</div>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="ConfirmPassword" class="form-label fw-semibold">
+                                <i class="bi bi-shield-lock me-2"></i>Şifre Tekrar
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-shield-lock text-muted"></i>
+                                </span>
+                                <input asp-for="ConfirmPassword" class="form-control border-start-0 ps-0" 
+                                       type="password" placeholder="••••••••" required id="confirmPasswordInput">
+                                <button type="button" class="input-group-text bg-light border-start-0" 
+                                        onclick="toggleConfirmPassword()">
+                                    <i class="bi bi-eye" id="confirmPasswordToggleIcon"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label text-muted small" for="termsCheck">
+                                <a href="#" class="text-decoration-none">Kullanım şartlarını</a> ve 
+                                <a href="#" class="text-decoration-none">gizlilik politikasını</a> okudum ve kabul ediyorum
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                        <i class="bi bi-person-plus me-2"></i>Kayıt Ol
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="position-relative my-4">
+                        <hr class="border-secondary">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">
+                            veya
+                        </span>
+                    </div>
+
+                    <!-- Social Register -->
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-google me-2"></i>Google
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-github me-2"></i>GitHub
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Login Link -->
+                <p class="text-center mt-4 mb-0">
+                    Zaten hesabınız var mı? 
+                    <a asp-action="Login" class="text-decoration-none fw-semibold">
+                        Giriş Yapın
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="text-center mt-4">
+            <a asp-controller="Posts" asp-action="Index" class="text-decoration-none text-muted">
+                <i class="bi bi-arrow-left me-1"></i>Anasayfaya Dön
+            </a>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        function toggleConfirmPassword() {
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const toggleIcon = document.getElementById('confirmPasswordToggleIcon');
+            
+            if (confirmPasswordInput.type === 'password') {
+                confirmPasswordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                confirmPasswordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        // Form validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+}

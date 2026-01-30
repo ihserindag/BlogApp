@@ -1,20 +1,145 @@
 @model LoginViewModel
-<div class="row bg-white rounded p-3" >
-    <div class="col-12">
-        <h1>Login</h1>
-        <form action="Login" method="post">
-        <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control">
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+<div class="row justify-content-center align-items-center min-vh-100-minus-nav">
+    <div class="col-lg-5 col-md-7 col-sm-9">
+        <!-- Login Card -->
+        <div class="card shadow-lg border-0 fade-in">
+            <div class="card-body p-5">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-2">Hoş Geldiniz</h2>
+                    <p class="text-muted">Hesabınıza giriş yapın</p>
+                </div>
+
+                <!-- Form -->
+                <form asp-action="Login" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="All" class="alert alert-danger d-none" role="alert" id="validationSummary"></div>
+                    
+                    <!-- Email Field -->
+                    <div class="mb-4">
+                        <label asp-for="Email" class="form-label fw-semibold">
+                            <i class="bi bi-envelope me-2"></i>E-posta Adresi
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-envelope text-muted"></i>
+                            </span>
+                            <input asp-for="Email" class="form-control border-start-0 ps-0" 
+                                   placeholder="ornek@email.com" required>
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-semibold">
+                            <i class="bi bi-lock me-2"></i>Şifre
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-lock text-muted"></i>
+                            </span>
+                            <input asp-for="Password" class="form-control border-start-0 ps-0" 
+                                   type="password" placeholder="••••••••" required id="passwordInput">
+                            <button type="button" class="input-group-text bg-light border-start-0" 
+                                    onclick="togglePassword()">
+                                <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label text-muted" for="rememberMe">
+                                Beni Hatırla
+                            </label>
+                        </div>
+                        <a href="#" class="text-decoration-none small">Şifremi Unuttum?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="position-relative my-4">
+                        <hr class="border-secondary">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">
+                            veya
+                        </span>
+                    </div>
+
+                    <!-- Social Login -->
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-google me-2"></i>Google
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-github me-2"></i>GitHub
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Register Link -->
+                <p class="text-center mt-4 mb-0">
+                    Hesabınız yok mu? 
+                    <a asp-action="Register" class="text-decoration-none fw-semibold">
+                        Kayıt Olun
+                    </a>
+                </p>
             </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control">
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="text-center mt-4">
+            <a asp-controller="Posts" asp-action="Index" class="text-decoration-none text-muted">
+                <i class="bi bi-arrow-left me-1"></i>Anasayfaya Dön
+            </a>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        // Form validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+}

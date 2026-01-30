@@ -1,72 +1,120 @@
 @model PostsViewModel
 
 <div class="row">
-  <div class="col-lg-8">
-    <div class="bg-white p-4">
-      <h1 class="h4 mb-4">
-     @ViewBag.Tag 
-      
-      </h1>
-      @foreach (var post in @Model.Posts)
-      {
-        <div class="card bg-transparent border-0 mb-3">
-          <div class="row">
-            <div class="col-4">
-              <img src="~/img/@post.Image" class="img-fluid rounded" alt="">
+    <div class="col-lg-8">
+        <!-- Tag Header -->
+        @if (!string.IsNullOrEmpty(ViewBag.Tag))
+        {
+            <div class="hero mb-4">
+                <div class="container">
+                    <h1 class="mb-2"><i class="bi bi-tag-fill me-2"></i>@ViewBag.Tag</h1>
+                    <p class="mb-0">Bu etiket altındaki tüm gönderiler</p>
+                </div>
             </div>
-            <div class="col-8">
-              <h5>
-                <a asp-action="Details" asp-route-url="@post.Url" class="btn-link fw-bold">@post.Title</a>
-              </h5>
-              <p>
-                @post.Description
-
-
-              </p>
-              @foreach (var tag in @post.Tags)
-              {
-
-                <a asp-action="Index" asp-route-tag="@tag.Url"
-                  class="barge bg-@tag.Color bg-opacity-10 text-@tag.Color mb-2 p-1 fw-bold rounded">@tag.Text</a>
-              }
-            </div>
-          </div>
+        }
+        
+        <!-- Posts List -->
+        <div class="bg-white p-4 rounded-3 shadow-sm">
+            @if (!string.IsNullOrEmpty(ViewBag.Tag))
+            {
+                <h4 class="mb-4 text-gradient">
+                    <i class="bi bi-tag-fill me-2"></i>@ViewBag.Tag
+                </h4>
+            }
+            
+            @foreach (var post in Model.Posts)
+            {
+                <div class="post-card fade-in">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="position-relative overflow-hidden rounded-3">
+                                <img src="~/img/@post.Image" class="img-fluid w-100" alt="@post.Title" style="height: 200px; object-fit: cover;">
+                                <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-dark opacity-0 hover-opacity-50 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="tags mb-3">
+                                @if (post.Tags != null && post.Tags.Any())
+                                {
+                                    @foreach (var tag in post.Tags)
+                                    {
+                                        <a asp-action="Index" asp-route-tag="@tag.Url"
+                                           class="barge bg-@tag.Color bg-opacity-10 text-@tag.Color">
+                                            <i class="bi bi-tag-fill me-1"></i>@tag.Text
+                                        </a>
+                                    }
+                                }
+                            </div>
+                            
+                            <h3 class="post-title">
+                                <a asp-action="Details" asp-route-url="@post.Url">@post.Title</a>
+                            </h3>
+                            
+                            <p class="text-secondary mb-3">@post.Description</p>
+                            
+                            <div class="post-meta">
+                                <span>
+                                    <i class="bi bi-calendar-event"></i>
+                                    @(post.PublishedOn?.ToString("d MMMM yyyy") ?? "")
+                                </span>
+                                <span>
+                                    <i class="bi bi-person-circle"></i>
+                                    <a asp-controller="Users" asp-action="Profile" asp-route-username="@post.User.UserName">
+                                        @post.User.Name
+                                    </a>
+                                </span>
+                                <span>
+                                    <i class="bi bi-chat-dots"></i>
+                                    @post.Comments.Count() yorum
+                                </span>
+                            </div>
+                            
+                            <a asp-action="Details" asp-route-url="@post.Url" class="btn btn-outline-primary btn-sm mt-2">
+                                <i class="bi bi-arrow-right me-1"></i> Devamını Oku
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr class="my-4 border-secondary opacity-25">
+            }
+            
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Sayfalama">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)"
+                               asp-route-tag="@Model.CurrentTag">
+                                <i class="bi bi-chevron-left"></i> Önceki
+                            </a>
+                        </li>
+                        
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-tag="@Model.CurrentTag">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                        
+                        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)"
+                               asp-route-tag="@Model.CurrentTag">
+                                Sonraki <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
         </div>
-        <hr class="my-3" />
-      }
-      <nav aria-label="Sayfalama">
-        <ul class="pagination">
-          <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)"
-              asp-route-tag="@Model.CurrentTag">
-              Önceki
-            </a>
-          </li>
-
-          @for (int i = 1; i <= Model.TotalPages; i++)
-          {
-            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-              <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-tag="@Model.CurrentTag">
-                @i
-              </a>
-            </li>
-          }
-
-          <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
-            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)"
-              asp-route-tag="@Model.CurrentTag">
-              Sonraki
-            </a>
-          </li>
-        </ul>
-      </nav>
-
     </div>
-  </div>
-  <div class="col-lg-4">
-
-    <vc:tags-menu></vc:tags-menu>
-    <vc:new-posts></vc:new-posts>
-
-  </div>
+    
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <vc:tags-menu></vc:tags-menu>
+        <vc:new-posts></vc:new-posts>
+    </div>
 </div>
