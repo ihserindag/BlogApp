@@ -11,11 +11,9 @@ builder.Services.AddDbContext<BlogContext>(options =>
 {
     var config = builder.Configuration;
     var connectionString = config.GetConnectionString("mysql_connection");
-    //options.UseSqlite(connectionString);
-   var version = new MariaDbServerVersion(new Version(10, 4, 32));
-    options.UseMySql(connectionString, version);
-
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
+
 builder.Services.AddScoped<IPostRepository, EfPostRepository>();
 builder.Services.AddScoped<ITagRepository, EfTagRepository>();
 builder.Services.AddScoped<ICommentRepository, EfCommentRepository>();
@@ -28,15 +26,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     }
 ); //login işlemleri
 
-
-
 var app = builder.Build();
 
 app.UseRouting();
 app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 SeedData.TestVerileriniDoldur(app);
 
@@ -50,14 +45,12 @@ app.MapControllerRoute(
     name: "posts_by_tag",
     pattern: "posts/tag/{tag}",
     defaults: new { controller = "Posts", action = "Index" }
-
 );
 
 app.MapControllerRoute(
     name: "user_profile",
     pattern: "profile/{username}",
     defaults: new { controller = "Users", action = "Profile" }
-
 );
 
 app.MapControllerRoute(

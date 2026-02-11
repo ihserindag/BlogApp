@@ -1,0 +1,14 @@
+# Nixpacks configuration for ASP.NET Core BlogApp
+
+[phases.setup]
+nixPkgs = ["dotnet-sdk_9"]
+
+[phases.build]
+cmds = ["dotnet publish -c Release -o out"]
+
+[start]
+cmd = "dotnet out/BlogApp.dll"
+
+[variables]
+ASPNETCORE_URLS = "http://+:3000"
+ASPNETCORE_ENVIRONMENT = "Production"
