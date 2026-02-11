@@ -9,9 +9,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<BlogContext>(options =>
 {
-    var config = builder.Configuration;
-    var connectionString = config.GetConnectionString("mysql_connection");
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+    var connectionString = builder.Configuration.GetConnectionString("mysql_connection");
+    Console.WriteLine($"MySQL Connection: {(string.IsNullOrEmpty(connectionString) ? "BOŞ - HATA!" : "Bağlantı dizesi bulundu")}");
+    var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
+    options.UseMySql(connectionString, serverVersion);
 });
 
 builder.Services.AddScoped<IPostRepository, EfPostRepository>();
@@ -33,7 +34,15 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-SeedData.TestVerileriniDoldur(app);
+try
+{
+    SeedData.TestVerileriniDoldur(app);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"SeedData Hatası: {ex.Message}");
+    Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+}
 
 app.MapControllerRoute(
     name: "post-details",
